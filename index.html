@@ -3,161 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>世界生態之旅：猜猜我是誰？</title>
+  <title>世界生態之旅</title>
   <style>
-    :root { 
-      --primary: #4caf50; 
-      --bg: #e8f5e9; 
-      --ai-bubble: #ffffff; 
-      --accent: #2196f3; 
-      --best: #ff9800; 
-    }
-    body { 
-      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
-      background-color: var(--bg); 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      margin: 0; 
-    }
-    #chat-container { 
-      width: 95%; 
-      max-width: 550px; 
-      height: 90vh; 
-      background: white; 
-      border-radius: 20px; 
-      display: flex; 
-      flex-direction: column; 
-      overflow: hidden; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-      position: relative; 
-      border: 4px solid #fff; 
-    }
-    
-    #scoreboard { 
-      background: linear-gradient(90deg, var(--primary), var(--accent)); 
-      color: white; 
-      padding: 12px; 
-      display: flex; 
-      justify-content: space-around; 
-      align-items: center; 
-      font-weight: bold; 
-      font-size: 16px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-      z-index: 10; 
-    }
-    .stat-box { text-align: center; flex: 1; }
-    .stat-val { font-size: 26px; display: block; margin-top: 2px; }
-    #best-record-box { 
-      background: var(--best); 
-      margin: 0 10px; 
-      padding: 5px 15px; 
-      border-radius: 12px; 
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    }
-
-    #chat-box { 
-      flex-grow: 1; 
-      padding: 20px; 
-      overflow-y: auto; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 15px; 
-      background: #fafafa; 
-    }
-    .message { 
-      padding: 14px 18px; 
-      border-radius: 20px; 
-      max-width: 85%; 
-      line-height: 1.6; 
-      font-size: 16px; 
-      word-wrap: break-word; 
-      white-space: pre-wrap; 
-    }
-    .ai-msg { 
-      background-color: var(--ai-bubble); 
-      align-self: flex-start; 
-      border-bottom-left-radius: 2px; 
-      color: #1b5e20; 
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.05); 
-    }
-    .user-msg { 
-      background-color: var(--primary); 
-      color: white; 
-      align-self: flex-end; 
-      border-bottom-right-radius: 2px; 
-      box-shadow: -2px 2px 5px rgba(0,0,0,0.1); 
-    }
-    #input-area { 
-      display: flex; 
-      padding: 20px; 
-      background: white; 
-      border-top: 1px solid #eee; 
-    }
-    #user-input { 
-      flex-grow: 1; 
-      padding: 12px 20px; 
-      border: 2px solid #eee; 
-      border-radius: 30px; 
-      outline: none; 
-      font-size: 16px; 
-    }
-    #send-btn { 
-      background-color: var(--accent); 
-      color: white; 
-      border: none; 
-      padding: 0 25px; 
-      margin-left: 10px; 
-      border-radius: 30px; 
-      cursor: pointer; 
-      font-weight: bold; 
-      transition: 0.3s; 
-    }
+    :root { --primary: #4caf50; --accent: #2196f3; --bg: #f4f7f6; }
+    body { font-family: sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    #chat-container { width: 95%; max-width: 500px; height: 85vh; background: white; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+    #scoreboard { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; padding: 10px; display: flex; justify-content: space-around; font-weight: bold; }
+    .stat-val { font-size: 22px; display: block; }
+    #chat-box { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fafafa; }
+    .message { padding: 12px 16px; border-radius: 15px; max-width: 85%; line-height: 1.5; font-size: 16px; }
+    .ai-msg { background: white; align-self: flex-start; border: 1px solid #eee; }
+    .user-msg { background: var(--primary); color: white; align-self: flex-end; }
+    #input-area { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; }
+    #user-input { flex-grow: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+    #send-btn { background: var(--accent); color: white; border: none; padding: 0 20px; margin-left: 8px; border-radius: 20px; cursor: pointer; }
   </style>
 </head>
 <body>
 
 <div id="chat-container">
   <div id="scoreboard">
-    <div class="stat-box">🌍 探索次數 <span id="count-num" class="stat-val">0</span></div>
-    <div class="stat-box" id="best-record-box">🏆 最佳紀錄 <span id="best-num" class="stat-val">--</span></div>
+    <div style="text-align:center">探索次數 <span id="count-num" class="stat-val">0</span></div>
+    <div style="text-align:center">最佳紀錄 <span id="best-num" class="stat-val">--</span></div>
   </div>
-  
   <div id="chat-box">
-    <div class="message ai-msg">🌍 各位小冒險家，歡迎參加「世界生態之旅」！ 🌍
-
-我現在心中正想著一種生活在地球某個角落的神秘動物喔！你可以透過問我問題，來猜猜我是誰。
-
-你可以問我：
-🌵 「你住在沙漠還是冰原？」
-🦴 「你吃肉還是吃草？」
-
-準備好要出發探索世界了嗎？趕快問我第一個問題吧！ ✨</div>
+    <div class="message ai-msg">🌍 冒險家你好！我心中想著一種神秘動物，請提問特徵來猜猜我是誰。例如：「你住的地方冷嗎？」</div>
   </div>
   <div id="input-area">
-    <input type="text" id="user-input" placeholder="例如：你有幾隻腳？" autocomplete="off">
-    <button id="send-btn">出發！</button>
+    <input type="text" id="user-input" placeholder="輸入問題..." autocomplete="off">
+    <button id="send-btn">傳送</button>
   </div>
 </div>
 
 <script>
-  // 🚨 記得填入你的 GAS 部署網址
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbzModRkJ_zV_Z-hS3o4JoH81fZC0tAIfkFysuO7X9fn6Iz70aW-1gNcF1cJEthvOFhY/exec'; 
-
   const chatBox = document.getElementById('chat-box');
   const userInput = document.getElementById('user-input');
-  const sendBtn = document.getElementById('send-btn');
   const countDisplay = document.getElementById('count-num');
   const bestDisplay = document.getElementById('best-num');
 
   let questionCount = 0;
   let bestRecord = Infinity;
-  let chatHistory = [{ role: "model", parts: [{ text: "導遊已完成開場，世界生態之旅開始。" }] }];
+  let chatHistory = [{ role: "model", parts: [{ text: "遊戲開始。" }] }];
 
   function addMessage(text, sender) {
     const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender === 'user' ? 'user-msg' : 'ai-msg');
+    msgDiv.className = `message ${sender}-msg`;
     msgDiv.innerText = text;
     chatBox.appendChild(msgDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -167,66 +58,44 @@
     const text = userInput.value.trim();
     if (!text) return;
 
-    // --- 歸零與判定邏輯優化 ---
-    const resetKeywords = ["要", "好", "開始", "想去", "挑戰", "出發", "沙漠", "深海", "森林", "玩", "極地", "下一趟"];
     const lastAiMsg = chatHistory[chatHistory.length - 1].parts[0].text;
-    const isAiAskingToPlayAgain = lastAiMsg.includes("下一站") || lastAiMsg.includes("再玩一局") || lastAiMsg.includes("挑戰") || lastAiMsg.includes("下一趟");
-    
-    // 先檢查是否為重置動作
-    if (isAiAskingToPlayAgain && resetKeywords.some(k => text.includes(k))) {
-      questionCount = 0; 
-    } else {
-      // 只有真正的問題才計次
-      questionCount++; 
+    const isReset = (lastAiMsg.includes("下一站") || lastAiMsg.includes("再玩")) && (text.includes("好") || text.includes("要") || text.includes("開始"));
+    const isGuessing = text.includes("你是") || text.includes("它是") || text.includes("猜");
+
+    if (isReset) {
+      questionCount = 0;
+    } else if (!isGuessing) {
+      questionCount++; // 只有問問題才計次，猜測不計次
     }
     
-    // 立即更新顯示
     countDisplay.innerText = questionCount;
-    
     addMessage(text, 'user');
     userInput.value = '';
     chatHistory.push({ role: "user", parts: [{ text: text }] });
-
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'message ai-msg';
-    loadingDiv.innerText = '導遊正在定位坐標...';
-    chatBox.appendChild(loadingDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
       const response = await fetch(GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ message: text, history: chatHistory })
+        body: JSON.stringify({ history: chatHistory })
       });
-      
       const data = await response.json();
-      chatBox.removeChild(loadingDiv);
-      
       if (data.reply) {
         addMessage(data.reply, 'ai');
         chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
 
-        // 判定答對更新紀錄
-        const winKeywords = ["恭喜", "答對", "猜中", "沒錯", "正確", "就是我", "對了"];
-        const isWin = winKeywords.some(k => data.reply.includes(k));
-
-        if (isWin && questionCount > 0) {
-          if (questionCount < bestRecord) {
+        if (data.reply.includes("對了") || data.reply.includes("猜對") || data.reply.includes("答對")) {
+          if (questionCount > 0 && questionCount < bestRecord) {
             bestRecord = questionCount;
             bestDisplay.innerText = bestRecord;
           }
         }
       }
-    } catch (error) {
-      if (chatBox.contains(loadingDiv)) chatBox.removeChild(loadingDiv);
-      addMessage('訊號中斷，請稍後再試！', 'ai');
-    }
+    } catch (e) { addMessage("連線異常，請檢查網路。", "ai"); }
   }
 
-  sendBtn.addEventListener('click', sendMessage);
-  userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+  document.getElementById('send-btn').onclick = sendMessage;
+  userInput.onkeypress = (e) => { if(e.key==='Enter') sendMessage(); };
 </script>
-
 </body>
 </html>
