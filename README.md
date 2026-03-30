@@ -1,4 +1,4 @@
-# 🌏 全球生物猜謎探險 (Global Bio-Guesser)
+# 🌏 跨國生物猜謎探險 (Global Bio-Guesser)
 
 這是一個專為國小 3-4 年級設計的互動式生態教育遊戲，結合了 **Google Gemini AI** 的強大對話能力與 **Google Apps Script (GAS)** 的輕量化部署。玩家將化身探險家，透過與 AI 探險隊長的問答，解開世界各地的生物之謎。
 
