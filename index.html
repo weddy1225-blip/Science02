@@ -2,100 +2,180 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>世界生態之旅</title>
+  <title>🌏 全球生物猜謎：探險家版</title>
   <style>
-    :root { --primary: #4caf50; --accent: #2196f3; --bg: #f4f7f6; }
-    body { font-family: sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    #chat-container { width: 95%; max-width: 500px; height: 85vh; background: white; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-    #scoreboard { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; padding: 10px; display: flex; justify-content: space-around; font-weight: bold; }
-    .stat-val { font-size: 22px; display: block; }
-    #chat-box { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fafafa; }
-    .message { padding: 12px 16px; border-radius: 15px; max-width: 85%; line-height: 1.5; font-size: 16px; }
-    .ai-msg { background: white; align-self: flex-start; border: 1px solid #eee; }
-    .user-msg { background: var(--primary); color: white; align-self: flex-end; }
-    #input-area { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; }
-    #user-input { flex-grow: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-    #send-btn { background: var(--accent); color: white; border: none; padding: 0 20px; margin-left: 8px; border-radius: 20px; cursor: pointer; }
+    :root { --primary: #2e7d32; --secondary: #e8f5e9; --accent: #ff9800; --bg: #f1f8e9; }
+    body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; height: 100vh; overflow: hidden; }
+    #main-container { display: flex; gap: 20px; width: 100%; max-width: 1000px; height: 90vh; }
+    
+    /* 左側面板 */
+    #side-panel { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+    .card { background: white; padding: 18px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .card h3 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em; display: flex; align-items: center; gap: 5px; }
+    .score-val { font-size: 24px; font-weight: bold; color: var(--accent); }
+    .region-select { width: 100%; padding: 10px; border-radius: 8px; border: 2px solid var(--secondary); font-size: 16px; outline: none; cursor: pointer; }
+
+    /* 對話區域 */
+    #chat-container { flex-grow: 1; min-width: 0; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+    #chat-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    
+    .message { padding: 14px 18px; border-radius: 20px; max-width: 85%; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
+    .ai-msg { background-color: var(--secondary); align-self: flex-start; border-bottom-left-radius: 2px; color: #1b5e20; }
+    .user-msg { background-color: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    
+    #input-area { display: flex; border-top: 1px solid #eee; padding: 18px; gap: 10px; background: #fff; align-items: center; }
+    #user-input { flex-grow: 1; padding: 12px 20px; border: 2px solid #eee; border-radius: 30px; outline: none; }
+    
+    .btn { border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    #send-btn { background-color: var(--primary); color: white; }
+    #hint-btn { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+
+    .reset-btn { margin-top: auto; padding: 10px; cursor: pointer; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #666; }
   </style>
 </head>
 <body>
-
-<div id="chat-container">
-  <div id="scoreboard">
-    <div style="text-align:center">探索次數 <span id="count-num" class="stat-val">0</span></div>
-    <div style="text-align:center">最佳紀錄 <span id="best-num" class="stat-val">--</span></div>
+<div id="main-container">
+  <div id="side-panel">
+    <div class="card">
+      <h3>🌍 搜查地點</h3>
+      <select id="region-selector" class="region-select" onchange="confirmRegionChange()">
+        <option value="臺灣">🇹🇼 臺灣 (Taiwan)</option>
+        <option value="日本">🇯🇵 日本 (Japan)</option>
+        <option value="非洲大草原">🦁 非洲大草原 (Africa)</option>
+        <option value="澳洲">🐨 澳洲 (Australia)</option>
+        <option value="亞馬遜雨林">🐍 亞馬遜雨林 (Amazon)</option>
+      </select>
+    </div>
+    <div class="card">
+      <h3>📊 本局提問次數</h3>
+      <span id="current-count" class="score-val">0</span>
+    </div>
+    <div class="card" style="background: #fffde7;">
+      <h3>🏆 最佳紀錄</h3>
+      <span id="best-count" class="score-val">--</span>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">🧹 清除紀錄並重設遊戲</button>
   </div>
-  <div id="chat-box">
-    <div class="message ai-msg">🌍 冒險家你好！我心中想著一種神秘動物，請提問特徵來猜猜我是誰。例如：「你住的地方冷嗎？」</div>
-  </div>
-  <div id="input-area">
-    <input type="text" id="user-input" placeholder="輸入問題..." autocomplete="off">
-    <button id="send-btn">傳送</button>
+  <div id="chat-container">
+    <div id="chat-box"></div>
+    <div id="input-area">
+      <button id="hint-btn" class="btn" onclick="getHint()">💡 提示</button>
+      <input type="text" id="user-input" placeholder="問問看：你是脊椎動物嗎？" autocomplete="off">
+      <button id="send-btn" class="btn" onclick="sendMessage()">發送 🚀</button>
+    </div>
   </div>
 </div>
 
 <script>
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzModRkJ_zV_Z-hS3o4JoH81fZC0tAIfkFysuO7X9fn6Iz70aW-1gNcF1cJEthvOFhY/exec'; 
   const chatBox = document.getElementById('chat-box');
   const userInput = document.getElementById('user-input');
-  const countDisplay = document.getElementById('count-num');
-  const bestDisplay = document.getElementById('best-num');
+  const currentDisplay = document.getElementById('current-count');
+  const bestDisplay = document.getElementById('best-count');
+  const regionSelector = document.getElementById('region-selector');
+
+  // 請更換為您的新版 GAS 部署網址
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzv423vR0gAst3Sdr5L5xHjaTNhqBp2FxxGXCi694XvaN67QYyD9BigfLVlCBTBb5PgvA/exec'; 
 
   let questionCount = 0;
-  let bestRecord = Infinity;
-  let chatHistory = [{ role: "model", parts: [{ text: "遊戲開始。" }] }];
+  let memory = [];
+  let isGameOver = false;
+
+  window.onload = () => {
+    const savedBest = localStorage.getItem('bioQuizBestGlobal');
+    if (savedBest) bestDisplay.textContent = savedBest;
+    updateWelcomeMessage();
+  };
+
+  function updateWelcomeMessage() {
+    const region = regionSelector.value;
+    const msg = `✈️ 本次探險已安全降落在【${region}】！\n\n👋 哈囉猜謎者！我是探險隊長。我已在心中選好一種當地生物，請開始提問吧！🔍\n(卡關時可以點擊「提示」按鈕喔！)`;
+    addMessage(msg, 'ai');
+  }
 
   function addMessage(text, sender) {
     const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${sender}-msg`;
-    msgDiv.innerText = text;
+    msgDiv.className = `message ${sender === 'user' ? 'user-msg' : 'ai-msg'}`;
+    msgDiv.textContent = text;
     chatBox.appendChild(msgDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
+    memory.push({ "role": sender === 'user' ? "user" : "model", "parts": [{ "text": text }] });
+
+    if (sender === 'ai' && (text.includes('恭喜') || text.includes('答對了'))) {
+      if (!isGameOver) { saveRecord(); isGameOver = true; }
+    }
+    if (sender === 'ai' && (text.includes('新據點') || text.includes('開始提問'))) {
+      startNewRound();
+    }
+  }
+
+  function getHint() {
+    if (isGameOver) return;
+    userInput.value = "請給我一個相關提示 🔍";
+    sendMessage();
   }
 
   async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
-
-    const lastAiMsg = chatHistory[chatHistory.length - 1].parts[0].text;
-    const isReset = (lastAiMsg.includes("下一站") || lastAiMsg.includes("再玩")) && (text.includes("好") || text.includes("要") || text.includes("開始"));
-    const isGuessing = text.includes("你是") || text.includes("它是") || text.includes("猜");
-
-    if (isReset) {
-      questionCount = 0;
-    } else if (!isGuessing) {
-      questionCount++; // 只有問問題才計次，猜測不計次
-    }
     
-    countDisplay.innerText = questionCount;
+    // 提示不計入次數
+    if (!isGameOver && !text.includes("提示")) { 
+      questionCount++; 
+      currentDisplay.textContent = questionCount; 
+    }
     addMessage(text, 'user');
     userInput.value = '';
-    chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message ai-msg';
+    loadingDiv.textContent = '📡 通訊連線中...';
+    chatBox.appendChild(loadingDiv);
 
     try {
       const response = await fetch(GAS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ history: chatHistory })
+        body: JSON.stringify({ history: memory, region: regionSelector.value })
       });
       const data = await response.json();
-      if (data.reply) {
-        addMessage(data.reply, 'ai');
-        chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
-
-        if (data.reply.includes("對了") || data.reply.includes("猜對") || data.reply.includes("答對")) {
-          if (questionCount > 0 && questionCount < bestRecord) {
-            bestRecord = questionCount;
-            bestDisplay.innerText = bestRecord;
-          }
-        }
-      }
-    } catch (e) { addMessage("連線異常，請檢查網路。", "ai"); }
+      chatBox.removeChild(loadingDiv);
+      addMessage(data.reply, 'ai');
+    } catch (error) {
+      chatBox.removeChild(loadingDiv);
+      addMessage('❌ 通訊異常，請稍後再試！', 'ai');
+    }
   }
 
-  document.getElementById('send-btn').onclick = sendMessage;
-  userInput.onkeypress = (e) => { if(e.key==='Enter') sendMessage(); };
+  function confirmRegionChange() {
+    if (confirm(`準備好前往新地點探險了嗎？(目前的紀錄將會重置)`)) {
+      chatBox.innerHTML = '';
+      questionCount = 0;
+      currentDisplay.textContent = "0";
+      memory = [];
+      isGameOver = false;
+      updateWelcomeMessage();
+    }
+  }
+
+  function saveRecord() {
+    const savedBest = localStorage.getItem('bioQuizBestGlobal');
+    if (!savedBest || questionCount < parseInt(savedBest)) {
+      localStorage.setItem('bioQuizBestGlobal', questionCount);
+      bestDisplay.textContent = questionCount;
+    }
+  }
+
+  function startNewRound() {
+    questionCount = 0;
+    currentDisplay.textContent = "0";
+    isGameOver = false;
+    memory = memory.slice(-1); 
+  }
+
+  function resetAll() {
+    if(confirm("確定要重設紀錄嗎？")) { localStorage.removeItem('bioQuizBestGlobal'); location.reload(); }
+  }
+
+  userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 </script>
 </body>
 </html>
