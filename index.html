@@ -2,38 +2,170 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>🌏 全球生物猜謎：探險家版</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌏 跨國生物猜謎</title>
   <style>
-    :root { --primary: #2e7d32; --secondary: #e8f5e9; --accent: #ff9800; --bg: #f1f8e9; }
-    body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; height: 100vh; overflow: hidden; }
-    #main-container { display: flex; gap: 20px; width: 100%; max-width: 1000px; height: 90vh; }
+    :root { 
+      --primary: #2e7d32; 
+      --secondary: #e8f5e9; 
+      --accent: #ff9800; 
+      --bg: #f1f8e9; 
+      --white: #ffffff;
+    }
+    
+    body { 
+      font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; 
+      background-color: var(--bg); 
+      display: flex; 
+      justify-content: center; 
+      padding: 20px; 
+      margin: 0; 
+      height: 100vh; 
+      box-sizing: border-box;
+      overflow: hidden; 
+    }
+
+    #main-container { 
+      display: flex; 
+      gap: 20px; 
+      width: 100%; 
+      max-width: 1100px; 
+      height: 90vh; 
+    }
     
     /* 左側面板 */
-    #side-panel { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-    .card { background: white; padding: 18px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .card h3 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em; display: flex; align-items: center; gap: 5px; }
-    .score-val { font-size: 24px; font-weight: bold; color: var(--accent); }
-    .region-select { width: 100%; padding: 10px; border-radius: 8px; border: 2px solid var(--secondary); font-size: 16px; outline: none; cursor: pointer; }
+    #side-panel { 
+      width: 300px; 
+      flex-shrink: 0; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+    }
 
-    /* 對話區域 */
-    #chat-container { flex-grow: 1; min-width: 0; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
-    #chat-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    .card { 
+      background: var(--white); 
+      padding: 20px; 
+      border-radius: 15px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    }
+
+    .card h3 { 
+      margin: 0 0 10px 0; 
+      color: var(--primary); 
+      font-size: 1.1em; 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+    }
+
+    .score-val { 
+      font-size: 28px; 
+      font-weight: bold; 
+      color: var(--accent); 
+    }
+
+    .region-select { 
+      width: 100%; 
+      padding: 12px; 
+      border-radius: 8px; 
+      border: 2px solid var(--secondary); 
+      font-size: 16px; 
+      outline: none; 
+      cursor: pointer; 
+      background-color: #fafafa;
+    }
+
+    /* 右側對話區域 */
+    #chat-container { 
+      flex-grow: 1; 
+      min-width: 0; 
+      background: var(--white); 
+      border-radius: 20px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+    }
+
+    #chat-box { 
+      flex-grow: 1; 
+      padding: 25px; 
+      overflow-y: auto; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+      background-image: radial-gradient(#e8f5e9 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
     
-    .message { padding: 14px 18px; border-radius: 20px; max-width: 85%; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
-    .ai-msg { background-color: var(--secondary); align-self: flex-start; border-bottom-left-radius: 2px; color: #1b5e20; }
-    .user-msg { background-color: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .message { 
+      padding: 14px 20px; 
+      border-radius: 18px; 
+      max-width: 85%; 
+      line-height: 1.6; 
+      white-space: pre-wrap; 
+      word-wrap: break-word; 
+      font-size: 16px;
+    }
+
+    .ai-msg { 
+      background-color: var(--secondary); 
+      align-self: flex-start; 
+      border-bottom-left-radius: 2px; 
+      color: #1b5e20; 
+    }
+
+    .user-msg { 
+      background-color: var(--primary); 
+      color: var(--white); 
+      align-self: flex-end; 
+      border-bottom-right-radius: 2px; 
+    }
     
-    #input-area { display: flex; border-top: 1px solid #eee; padding: 18px; gap: 10px; background: #fff; align-items: center; }
-    #user-input { flex-grow: 1; padding: 12px 20px; border: 2px solid #eee; border-radius: 30px; outline: none; }
-    
-    .btn { border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-    #send-btn { background-color: var(--primary); color: white; }
+    #input-area { 
+      display: flex; 
+      border-top: 1px solid #eee; 
+      padding: 20px; 
+      gap: 12px; 
+      background: var(--white); 
+      align-items: center; 
+    }
+
+    #user-input { 
+      flex-grow: 1; 
+      padding: 14px 22px; 
+      border: 2px solid #eee; 
+      border-radius: 30px; 
+      outline: none; 
+      font-size: 16px;
+    }
+
+    .btn { 
+      border: none; 
+      padding: 12px 24px; 
+      border-radius: 30px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      transition: all 0.2s;
+    }
+
+    #send-btn { background-color: var(--primary); color: var(--white); }
     #hint-btn { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
 
-    .reset-btn { margin-top: auto; padding: 10px; cursor: pointer; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #666; }
+    .reset-btn { 
+      margin-top: auto; 
+      padding: 12px; 
+      cursor: pointer; 
+      background: #fafafa; 
+      border: 1px solid #ddd; 
+      border-radius: 10px; 
+      color: #666; 
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+
 <div id="main-container">
   <div id="side-panel">
     <div class="card">
@@ -46,21 +178,25 @@
         <option value="亞馬遜雨林">🐍 亞馬遜雨林 (Amazon)</option>
       </select>
     </div>
+    
     <div class="card">
       <h3>📊 本局提問次數</h3>
       <span id="current-count" class="score-val">0</span>
     </div>
+    
     <div class="card" style="background: #fffde7;">
       <h3>🏆 最佳紀錄</h3>
       <span id="best-count" class="score-val">--</span>
     </div>
+
     <button class="reset-btn" onclick="resetAll()">🧹 清除紀錄並重設遊戲</button>
   </div>
+
   <div id="chat-container">
     <div id="chat-box"></div>
     <div id="input-area">
       <button id="hint-btn" class="btn" onclick="getHint()">💡 提示</button>
-      <input type="text" id="user-input" placeholder="問問看：你是脊椎動物嗎？" autocomplete="off">
+      <input type="text" id="user-input" placeholder="試著提問：你是脊椎動物嗎？" autocomplete="off">
       <button id="send-btn" class="btn" onclick="sendMessage()">發送 🚀</button>
     </div>
   </div>
@@ -73,7 +209,7 @@
   const bestDisplay = document.getElementById('best-count');
   const regionSelector = document.getElementById('region-selector');
 
-  // 請更換為您的新版 GAS 部署網址
+  // 請更換為您的 GAS 部署網址
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbzv423vR0gAst3Sdr5L5xHjaTNhqBp2FxxGXCi694XvaN67QYyD9BigfLVlCBTBb5PgvA/exec'; 
 
   let questionCount = 0;
@@ -88,7 +224,7 @@
 
   function updateWelcomeMessage() {
     const region = regionSelector.value;
-    const msg = `✈️ 本次探險已安全降落在【${region}】！\n\n👋 哈囉猜謎者！我是探險隊長。我已在心中選好一種當地生物，請開始提問吧！🔍\n(卡關時可以點擊「提示」按鈕喔！)`;
+    const msg = `✈️ 探險隊已抵達【${region}】站！\n\n👋 歡迎參加「跨國生物猜謎」！我已在心中選好一種當地生物，請開始提問吧！🔍\n(如果需要線索，可以點擊左下角的「提示」按鈕喔！)`;
     addMessage(msg, 'ai');
   }
 
@@ -97,7 +233,8 @@
     msgDiv.className = `message ${sender === 'user' ? 'user-msg' : 'ai-msg'}`;
     msgDiv.textContent = text;
     chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+    
     memory.push({ "role": sender === 'user' ? "user" : "model", "parts": [{ "text": text }] });
 
     if (sender === 'ai' && (text.includes('恭喜') || text.includes('答對了'))) {
@@ -110,7 +247,7 @@
 
   function getHint() {
     if (isGameOver) return;
-    userInput.value = "請給我一個相關提示 🔍";
+    userInput.value = "請給我一個提示 💡";
     sendMessage();
   }
 
@@ -118,17 +255,18 @@
     const text = userInput.value.trim();
     if (!text) return;
     
-    // 提示不計入次數
     if (!isGameOver && !text.includes("提示")) { 
       questionCount++; 
       currentDisplay.textContent = questionCount; 
     }
+
     addMessage(text, 'user');
     userInput.value = '';
 
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'message ai-msg';
-    loadingDiv.textContent = '📡 通訊連線中...';
+    loadingDiv.id = 'temp-loading';
+    loadingDiv.textContent = '📡 通訊衛星連線中...';
     chatBox.appendChild(loadingDiv);
 
     try {
@@ -137,16 +275,20 @@
         body: JSON.stringify({ history: memory, region: regionSelector.value })
       });
       const data = await response.json();
-      chatBox.removeChild(loadingDiv);
+      
+      const loading = document.getElementById('temp-loading');
+      if (loading) chatBox.removeChild(loading);
+      
       addMessage(data.reply, 'ai');
     } catch (error) {
-      chatBox.removeChild(loadingDiv);
-      addMessage('❌ 通訊異常，請稍後再試！', 'ai');
+      const loading = document.getElementById('temp-loading');
+      if (loading) chatBox.removeChild(loading);
+      addMessage('❌ 連線異常，請稍後再試。', 'ai');
     }
   }
 
   function confirmRegionChange() {
-    if (confirm(`準備好前往新地點探險了嗎？(目前的紀錄將會重置)`)) {
+    if (confirm(`準備好前往新地點開始「跨國生物猜謎」了嗎？`)) {
       chatBox.innerHTML = '';
       questionCount = 0;
       currentDisplay.textContent = "0";
@@ -172,10 +314,16 @@
   }
 
   function resetAll() {
-    if(confirm("確定要重設紀錄嗎？")) { localStorage.removeItem('bioQuizBestGlobal'); location.reload(); }
+    if(confirm("確定要重設紀錄嗎？")) {
+      localStorage.removeItem('bioQuizBestGlobal');
+      location.reload();
+    }
   }
 
-  userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+  userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
 </script>
+
 </body>
 </html>
